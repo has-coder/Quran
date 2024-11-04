@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ألبوم الصور مع تقليب الصفحات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.css">
+    <style>
+        body {
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 10px;
+            padding: 20px;
+        }
+        .gallery div {
+            overflow: hidden;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .gallery img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        #book {
+            display: none;
+            width: 600px; /* حجم الكتاب */
+            height: 400px;
+            margin: 50px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            background-color: white;
+        }
+        .page {
+            width: 600px;
+            height: 400px;
+            position: relative;
+        }
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>ألبوم الصور</h1>
+    <div class="gallery" id="gallery"></div>
+    <div id="book"></div> <!-- هنا يتم إدراج الصفحات ديناميكيًا -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+    <script>
+        const totalImages = 120; // عدد الصور
+        const gallery = document.getElementById('gallery');
+
+        for (let i = 1; i <= totalImages; i++) {
+            const imageContainer = document.createElement('div');
+            const img = document.createElement('img');
+            img.src = `images/image${i}.jpg`;  // تأكد من وجود الصور بهذا الاسم في مجلد images
+            img.alt = `صورة ${i}`;
+            imageContainer.appendChild(img);
+            gallery.appendChild(imageContainer);
+
+            // إضافة حدث للنقر على الصورة
+            imageContainer.addEventListener('click', () => {
+                openBook(i);
+            });
+        }
+
+        // وظيفة لفتح الكتاب وعرض الصورة
+        function openBook(startPage) {
+            const book = document.getElementById('book');
+            book.innerHTML = ''; // تفريغ الكتاب قبل الإضافة
+            
+            for (let i = 1; i <= totalImages; i++) {
+                const page = document.createElement('div');
+                page.className = 'page';
+                const img = document.createElement('img');
+                img.src = `images/image${i}.jpg`;
+                img.alt = `صورة ${i}`;
+                page.appendChild(img);
+                book.appendChild(page);
+            }
+
+            // تهيئة الكتاب
+            $(book).turn({
+                width: 400,
+                height: 700,
+                autoCenter: true,
+                display: 'single',
+                page: startPage // تحديد الصفحة التي سيتم عرضها عند فتح الكتاب
+            });
+
+            // إظهار الكتاب
+            book.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
